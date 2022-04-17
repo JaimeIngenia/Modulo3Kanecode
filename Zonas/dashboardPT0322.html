@@ -1,0 +1,176 @@
+<!-- ///////////////////////////// Cabecera ///////////////////////////// -->
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
+    <meta name="generator" content="Jekyll v4.1.1">
+    <title>Dashboard Template · Bootstrap</title>
+
+    <link rel="canonical" href="https://getbootstrap.com/docs/4.5/examples/dashboard/">
+
+    <!-- Bootstrap core CSS -->
+<link href="/imgfiles/bootstrap/assets/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+      .bd-placeholder-img {
+        font-size: 1.125rem;
+        text-anchor: middle;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+      }
+
+      @media (min-width: 768px) {
+        .bd-placeholder-img-lg {
+          font-size: 3.5rem;
+        }
+      }
+    </style>
+    <!-- Custom styles for this template -->
+    <link href="/imgfiles/bootstrap/dashboard.css" rel="stylesheet">
+  </head>
+
+
+
+
+
+
+
+<!-- ///////////////////////////// Pie ///////////////////////////// -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+      <script>window.jQuery || document.write('<script src="../assets/js/vendor/jquery.slim.min.js"><\/script>')</script><script src="/imgfiles/bootstrap/assets/dist/js/bootstrap.bundle.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/feather-icons/4.9.0/feather.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.3/Chart.min.js"></script>
+        <script src="/imgfiles/bootstrap/dashboard.js"></script></body>
+</html>
+
+
+
+
+
+
+
+<!-- ///////////////////////////// Diseño de zona ///////////////////////////// -->
+
+<!-- /////////////////////////////  s1headerDashPT0322 ///////////////////////////// -->
+
+<!-- Traer los argumentos de entrada de sql   -->
+<eBD:ARGS NAME="Nombre" DEFAULT=""/>
+    
+<nav class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0 shadow">
+  <a class="navbar-brand col-md-3 col-lg-2 mr-0 px-3" href="#"><eBD:OUT VALUE="$Nombre"/></a>
+  <button class="navbar-toggler position-absolute d-md-none collapsed" type="button" data-toggle="collapse" data-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <input class="form-control form-control-dark w-100" type="text" placeholder="Search" aria-label="Search">
+  <ul class="navbar-nav px-3">
+    <li class="nav-item text-nowrap">
+      <a class="nav-link" href="#">Sign out</a>
+    </li>
+  </ul>
+</nav>
+
+
+
+<!-- /////////////////////////////  s2lateralDashPT0322 ///////////////////////////// -->
+
+<nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block bg-light sidebar collapse">
+    <div class="sidebar-sticky pt-3">
+      <ul class="nav flex-column">
+        <eBD:LINKTO PAGEID="42" ZONEID="47" VAR="varDashBoardLink" FRIENDLY_URL="dashboard"  />
+        <li class="nav-item">
+          <a class="nav-link active" href="<eBD:OUT VALUE='$varDashBoardLink'/>">
+            <span data-feather="home"></span>
+            Dashboard <span class="sr-only">(current)</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#">
+            <span data-feather="file"></span>
+            Pedidos
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#">
+            <span data-feather="shopping-cart"></span>
+            Productos
+          </a>
+        </li>
+        <eBD:LINKTO PAGEID="46" ZONEID="47" VAR="varCustomersLink" FRIENDLY_URL="customers"  />
+        <li class="nav-item">
+          <a class="nav-link" href="<eBD:OUT VALUE='$varCustomersLink'/>">
+            <span data-feather="users"></span>
+            Customers
+          </a>
+        </li>
+        <eBD:LINKTO PAGEID="49" ZONEID="41" VAR="varTiendasLink" FRIENDLY_URL="tiendas"  />
+        <li class="nav-item">
+          <a class="nav-link" href="<eBD:OUT VALUE='$varTiendasLink'/>">
+            <span data-feather="bar-chart-2"></span>
+            Tiendas
+          </a>
+        </li>
+
+      </ul>
+
+
+    </div>
+  </nav>
+
+<!-- ///////////////////////////// Diseño de zona ///////////////////////////// -->
+
+
+
+<!-- ******************** COMO CONSULTAR LOS USUARIOS LOGUEADOS ******************** -->
+<!-- <div class="col-md-9 ml-sm-auto col-lg-10 px-md-4">
+    <eBD:OUT VALUE="#[eBDUser.Username]"/>
+</div> -->
+
+
+
+<eBD:QUERY NAME="obtenerUsuario" DATASOURCE="default">
+     select  idUsuario,Nombre,Apellido,Correo,Pass,activo,Tipo,Avatar
+     from tablaRegistroPT0322
+     where Correo = '#[eBDUser.Username]'
+</eBD:QUERY>
+<eBD:IF EXPR="&obtenerUsuario > 0"> 
+    <eBD:FETCHROW QUERY="obtenerUsuario" NAME="ou"/>
+    <!-- Aqui estamos definiendo las variables con SQL -->
+    <eBD:SET VAR="fullName" VALUE="&ou.Nombre &ou.Apellido"/>
+    <eBD:SET VAR="Tipo" VALUE="&ou.Tipo"/>
+
+</eBD:IF>
+<!-- Aqui las estamos imprimiento las variables de sql -->
+<!-- <div class="col-md-9 ml-sm-auto col-lg-10 px-md-4">
+    <eBD:OUT VALUE="Nombre completo: $fullName"/>
+    <eBD:OUT VALUE='Tipo: $Tipo'/>
+</div> -->
+<!-- Aqui las estamos imprimiento las variables de sql -->
+
+
+
+
+
+
+
+
+<!-- ******************** COMO CONSULTAR LOS USUARIOS LOGUEADOS ********************-->
+
+
+<!-- SECCION DEL HEADER-->
+<!-- Enviar los argumentos de entrada de sql   -->
+<eBD:INCLUDE SECTION="s1headerDashPT0322" Nombre="$fullName"/>
+
+
+<div class="container-fluid">
+    <div class="row">
+        <!-- SECCION DEL LATERAL-->
+        <!-- Enviar los argumentos de entrada de sql   -->
+        <eBD:INCLUDE SECTION="s2lateralDashPT0322" Tipo="$Tipo"/>
+        <eBD:INCLUDE SECTION="_CURRENT_PAGE_" />
+    </div>
+ </div>

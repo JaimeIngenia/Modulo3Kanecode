@@ -1,0 +1,93 @@
+<!-- Variable para el segundo if -->
+<eBD:SET VAR="msg" VALUE="" />
+<!-- cada vez que recargue la pagima, cerrarenis secuin -->
+<eBD:LOGOUT />
+
+<!-- para traer el registro del formulario -->
+<eBD:ARGS NAME="Correo" DEFAULT="" />
+<eBD:ARGS NAME="Pass" DEFAULT="" />
+<!-- para que el usuario inicie secion -->
+
+<eBD:WARN VALUE="$Correo" />
+
+<!-- comprobar si los datos del usuario son corrento -->
+<eBD:IF EXPR="$Correo!=''">
+  <eBD:LOGIN USERNAME="$Correo" PASSWORD="$Pass" />
+  <!-- Segunda parte del if, si se cumple que no es anínimo -->
+  <eBD:IF EXPR="#[eBDUser.Username] != 'anonimo'">
+    <eBD:SET VAR="msg" VALUE="Usuario logueado correctamente" />
+    <eBD:LINKTO
+      PAGEID="42"
+      ZONEID="41"
+      VAR="variableLinkDashboard"
+      FRIENDLY_URL="/otraPaginaDashboard"
+    />
+    <!-- creamos una variable (voy a cambiar el parámetro de la cabecera) -->
+    <eBD:WARN VALUE="$variableLinkDashboard" />
+    <eBD:SET VAR="dum" VALUE="#[eBDResponse.status(302)]" />
+    <eBD:SET
+      VAR="dum"
+      VALUE="#[eBDResponse.header('Location','$variableLinkDashboard')]"
+    />
+    <!-- si no cumple que es anónimo -->
+    <eBD:ELSE>
+      <eBD:SET VAR="msg" VALUE="Usuario y/o contraseña Incorrectos" />
+    </eBD:ELSE>
+  </eBD:IF>
+</eBD:IF>
+
+<main class="form-signin">
+  <!-- imprimir datotos -->
+  <div>
+    <p>
+      <eBD:OUT VALUE="Correo:$Correo" />
+      <br />
+      <eBD:OUT VALUE="Pass:$Pass" />
+      <!-- Como sabemos si existe o no este usuario, Si es o no anónimo -->
+      <br />
+      <eBD:OUT VALUE="UsernamePorDefecto: #[eBDUser.Username] " />
+    </p>
+  </div>
+  <!-- imprimir datotos -->
+  <form method="POST">
+    <img
+      class="mb-4"
+      src="/imgfiles/bootstrap/assets/brand/bootstrap-solid.svg"
+      alt=""
+      width="72"
+      height="72"
+    />
+    <h1 class="h3 mb-3 font-weight-normal">Please sign in</h1>
+    <label for="inputEmail" class="sr-only">Email address</label>
+    <input
+      required
+      name="Correo"
+      type="email"
+      id="inputEmail"
+      class="form-control"
+      placeholder="Email address"
+      required
+      autofocus
+    />
+    <label for="inputPassword" class="sr-only">Password</label>
+    <input
+      type="password"
+      name="Pass"
+      required
+      id="inputPassword"
+      class="form-control"
+      placeholder="Password"
+      required
+    />
+    <div class="checkbox mb-3">
+      <label> <input type="checkbox" value="remember-me" /> Remember me </label>
+    </div>
+    <button class="btn btn-lg btn-primary btn-block" type="submit">
+      Sign in
+    </button>
+
+    <p class="mt-5 mb-3 text-muted">&copy; 2017-2020</p>
+    <!-- mostrando la variable mensaje -->
+    <p><eBD:OUT VALUE="$msg" /></p>
+  </form>
+</main>

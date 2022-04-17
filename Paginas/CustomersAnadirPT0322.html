@@ -1,0 +1,193 @@
+                                       <!-- estamos recibiendo como argumento editar  -->
+                                       <eBD:ARGS NAME="idUsuario" DEFAULT="-1"/>
+                                       <!-- y eliminar final al cuarta grabacion -->
+                                       <eBD:ARGS NAME="delete" DEFAULT="N"/>
+
+
+
+<!-- idUsuario,Nombre,Apellido,Correo,Pass,activo,Tipo,Avatar, -->
+<!-- vamos a capturar los datos cuando se de click en el boton guardar cuarta grabacion -->
+<eBD:ARGS NAME="Nombre" DEFAULT=""/>
+<eBD:ARGS NAME="Apellido" DEFAULT=""/>
+<eBD:ARGS NAME="Correo" DEFAULT=""/>
+<eBD:ARGS NAME="Pass" DEFAULT=""/>
+<eBD:ARGS NAME="Tipo" DEFAULT=""/>
+<eBD:ARGS NAME="Avatar" DEFAULT=""/>
+<eBD:ARGS NAME="activo" DEFAULT="N"/>
+
+
+
+
+
+   <eBD:LINKTO PAGEID="46" ZONEID="41" VAR="usuariosLInk" FRIENDLY_URL="/customers"/>
+   <!-- creamos una variable (voy a cambiar el parámetro de la cabecera) -->
+   
+
+
+
+
+
+               <!-- eliminar final de cuarta grabación -->
+               <eBD:IF EXPR="$delete == 'S'">
+                   <eBD:DELETE TABLE="tablaRegistroPT0322" IDFIELD="idUsuario" IDVALUE="$idUsuario"/>
+   <eBD:SET VAR="dum" VALUE="#[eBDResponse.status(302)]"/>
+   <eBD:SET VAR="dum" VALUE="#[eBDResponse.header('Location','$usuariosLInk')]"/>
+               </eBD:IF>
+
+
+
+<!-- creamos un archivo temporal para la imagen cuarta grabacion -->
+<eBD:TMPFILE VALUE="Avatar" VAR="variableFichero"/>
+<!-- vamos a insertar  los datos en la tabla con el boton guardar cuarta grabacion -->
+<eBD:IF EXPR="$Correo != ''">
+
+                       <!-- AL FINAL DE LA GRABACION 4, VAMOS A PONER UNA CONDICIÓN -->
+   <eBD:IF EXPR="$idUsuario == '-1'">
+                       <eBD:INSERT TABLE="tablaRegistroPT0322">
+                               <eBD:DATAFIELD FIELD="Nombre" VALUE="$Nombre"/>
+                               <eBD:DATAFIELD FIELD="Apellido" VALUE="$Apellido"/>
+                               <eBD:DATAFIELD FIELD="Correo" VALUE="$Correo"/>
+                               <eBD:DATAFIELD FIELD="Pass" VALUE="$Pass"/>
+                               <eBD:DATAFIELD FIELD="Tipo" VALUE="$Tipo"/>
+                               <eBD:DATAFIELD FIELD="Avatar" VALUE="$variableFichero"/>
+                               <eBD:DATAFIELD FIELD="activo" VALUE="$activo"/>
+                               <eBD:DATAFIELD FIELD="publicado" VALUE="S"/>
+                           </eBD:INSERT>
+   <!-- ultima parte cuarta grabación para llevar a la pagina -->
+   <eBD:SET VAR="dum" VALUE="#[eBDResponse.status(302)]"/>
+   <eBD:SET VAR="dum" VALUE="#[eBDResponse.header('Location','$usuariosLInk')]"/>
+
+                           <eBD:ELSE>
+                               <!-- Si no, vamos a hacer un update final cuarto video -->
+                               <eBD:UPDATE TABLE="tablaRegistroPT0322" IDFIELD="idUsuario" IDVALUE="$idUsuario" >
+                                   <eBD:DATAFIELD FIELD="Nombre" VALUE="$Nombre"/>
+                                   <eBD:DATAFIELD FIELD="Apellido" VALUE="$Apellido"/>
+                                   <eBD:DATAFIELD FIELD="Correo" VALUE="$Correo"/>
+                                   <eBD:DATAFIELD FIELD="Pass" VALUE="$Pass"/>
+                                   <eBD:DATAFIELD FIELD="Tipo" VALUE="$Tipo"/>
+                                   <eBD:DATAFIELD FIELD="Avatar" VALUE="$variableFichero"/>
+                                   <eBD:DATAFIELD FIELD="activo" VALUE="$activo"/>
+                               </eBD:UPDATE>
+   <!-- ultima parte cuarta grabación para llevar a la pagina -->
+   <eBD:SET VAR="dum" VALUE="#[eBDResponse.status(302)]"/>
+   <eBD:SET VAR="dum" VALUE="#[eBDResponse.header('Location','$usuariosLInk')]"/>
+                           
+                           </eBD:ELSE>
+   </eBD:IF>
+ 
+</eBD:IF>
+
+<!-- VAMOS A ACTUALIZAR EN LA NUEVA PAGINA EDITAR CON EL ID ESPECÍFICO  -->
+                                               <eBD:IF EXPR="$idUsuario != '-1' ">
+                                                   <eBD:SET VAR="prueba" VALUE="Entró"/>
+                                               <eBD:QUERY NAME="getDatosUsuarioTraer" DATASOURCE="default">
+                                                   select  idUsuario,Nombre,Apellido,Correo,Pass,activo,Tipo,Avatar, _idRegistro
+                                                   from tablaRegistroPT0322 
+                                                   where idUsuario = $idUsuario
+                                               </eBD:QUERY>
+                                               <eBD:IF EXPR="&getDatosUsuarioTraer > 0">
+                                                   <eBD:FOREACH QUERY="getDatosUsuarioTraer">
+                                                       <eBD:FETCHROW QUERY="getDatosUsuarioTraer" NAME="gdut"/>
+                                                       <!-- VAMOS A SETEAR CON ESTA NUEVA BASE DE DATOS ESPECÍFICA DE CADA USUARIO CUARTA GRABACION -->
+                                                       <eBD:SET VAR="Nombre" VALUE="&gdut.Nombre"/>
+                                                       <eBD:SET VAR="Apellido" VALUE="&gdut.Apellido"/>
+                                                       <eBD:SET VAR="Correo" VALUE="&gdut.Correo"/>
+                                                       <eBD:SET VAR="Tipo" VALUE="&gdut.Tipo"/>
+                                                       <eBD:SET VAR="Avatar" VALUE="&gdut.Avatar"/>
+
+                                                       <eBD:FILEPATH VAR="linkAvatar" TABLEID="40" ROW="gdut" FIELDNAME="Avatar"/>
+
+                                                       <eBD:SET VAR="activo" VALUE="&gdut.activo"/>
+
+
+                                                   </eBD:FOREACH>
+                                               </eBD:IF>
+                                               </eBD:IF>
+
+<main class="col-md-9 ml-sm-auto col-lg-10 px-md-4">
+<div>
+   <h1>Añadir o Editar UsuarioSSSS</h1>
+
+<!-- Vamos aimprimir los valores del botón guardar CUARTA GRABACION -->
+<div>
+   <eBD:OUT VALUE="idUsuario: $idUsuario"/><br>
+   <eBD:OUT VALUE="Nombre: $Nombre"/><br>
+   <eBD:OUT VALUE="Apellido: $Apellido"/><br>
+   <eBD:OUT VALUE="Correo: $Correo"/><br>
+   <eBD:OUT VALUE="Pass: $Pass"/><br>
+   <eBD:OUT VALUE="Tipo: $Tipo"/><br>
+
+   <eBD:OUT VALUE="Avatar: $linkAvatar"/><br>
+   
+   <eBD:OUT VALUE="activo: $activo"/><br>
+
+   <eBD:OUT VALUE="Prueba: $prueba"/>
+</div>
+
+
+
+
+<div>
+   <form action="" method="POST"  enctype="multipart/form-data">
+       <!-- ultima parte de actualizacion cuarta grabacion -->
+           <input type="hidden" name="idUsuario" value="<eBD:OUT VALUE='$idUsuario'/>">
+
+       <div class="form-group row" >
+           <div class="col-md-4">
+               <label for="Nombre">Nombre:</label>
+               <input value="<eBD:OUT VALUE='$Nombre'/>" required value="<eBD:OUT VALUE='$Nombre'/>" name="Nombre"  type="text" class="form-control" id="Nombre" placeholder="Jaime Andrés">
+           </div>
+           <div class="col-md-4">
+               <label for="Apellido">Apellido:</label>
+               <input value="<eBD:OUT VALUE='$Apellido'/>" required value="<eBD:OUT VALUE='$Apellido'/>" name="Apellido"  type="text" class="form-control" id="Apellido" placeholder="Moncayo Parra">  
+           </div>
+       </div>
+
+       <div class="form-group row" >
+           <div class="col-md-4">
+               <label for="Correo">Correo:</label>
+               <input name="Correo" required value="<eBD:OUT VALUE='$Correo'/>" type="email" class="form-control" id="Correo" placeholder="ja@gmail.com">
+           </div>
+           <div class="col-md-4">
+               <label for="Pass">Contraseña:</label>
+               <input name="Pass" <eBD:IF EXPR="$idUsuario == '-1' " type="password" class="form-control" id="Pass" placeholder="Ingrese su contraseña" >
+                   required
+               </eBD:IF>  >  
+           </div>
+       </div>
+           
+       <div class="form-group row" >
+           <div class="col-md-4">
+                   <label for="Tipo">Tipo</label>
+                   <select name="Tipo" class="form-control" id="Tipo">
+                   <option value="Administrador" selected>Administrador</option>
+                   <option value="Cliente" <eBD:IF EXPR="$Tipo == 'Cliente'">
+                       selected
+                   </eBD:IF> >Cliente</option>
+                   <option value="Tienda" <eBD:IF EXPR="$Tipo == 'Tienda'">
+                       selected
+                   </eBD:IF>>Tienda</option>
+                   </select>
+           </div>
+       </div>
+
+       <div class="form-group row" >
+           <div class="col-md-4">
+               <label for="Avatar">Avatar:</label>
+               <input name="Avatar" type="file" class="form-control" id="Avatar" >
+           </div>
+
+       </div>
+
+       <div class="form-check">
+           <input name="activo" type="checkbox" class="form-check-input" id="activo" value="S" <eBD:IF EXPR="$activo =='S'">
+                   cheked
+           </eBD:IF> >
+           <label class="form-check-label" for="activo" >Activo</label>
+       </div>
+
+       <button type="submit" class="btn btn-primary">Guardar</button>
+   </form>
+</div>
+</div>
+</main>

@@ -1,0 +1,59 @@
+<div class="col-md-9 ml-sm-auto col-lg-10 px-md-4">
+    <h1>soy customer0322</h1>
+       <!-- vamos a linkear la pagina añadir cuarta grabacion -->
+       <eBD:LINKTO PAGEID="50" ZONEID="41" VAR="varAnadirLink" FRIENDLY_URL="anadirEditar" />
+       
+       <a href="<eBD:OUT VALUE='$varAnadirLink'/>" class="btn btn-primary ">Añadir</a>
+ <!-- Como hacer una tabla con bootstrap tercera grabacion -->
+ <table class="table">
+    <thead>
+       <tr>
+          <th>id</th>
+          <th>Avatar</th>
+          <th>Nombre</th>
+          <th>Correo</th>
+          <th>Activo</th>
+          <th>Editar</th>
+       </tr>
+    </thead>
+    <tbody>
+       <!-- traer datos de las tablas con sql -->
+       <eBD:QUERY NAME="traerGetUsuarios" DATASOURCE="default">
+          select  idUsuario,Nombre,Apellido,Correo,Pass,activo,Tipo,Avatar, _idRegistro
+          from tablaRegistroPT0322
+       </eBD:QUERY>
+       <eBD:IF EXPR="&traerGetUsuarios > 0">
+          <eBD:FOREACH QUERY="traerGetUsuarios">
+             <eBD:FETCHROW QUERY="traerGetUsuarios" NAME="tgu"/>
+ <eBD:FILEPATH VAR="imgFuentePerfil" TABLEID="40" ROW="tgu" FIELDNAME="Avatar"/>
+                <tr>
+                   <td><eBD:OUT VALUE="&tgu.idUsuario"/></td>
+                   <td style="width: 32px"><img class="img-fluid " src="<eBD:OUT VALUE='$imgFuentePerfil'/>" alt="imagen de perfil"></td>
+                   <td><eBD:OUT VALUE="&tgu.Nombre &tgu.Apellido"/></td>
+                   <td><eBD:OUT VALUE="&tgu.Correo"/></td>
+                   <td><eBD:OUT VALUE="&tgu.activo"/></td>
+                   <td>
+                      <eBD:LINKTO PAGEID="50" ZONEID="41" VAR="varEditarLink" FRIENDLY_URL="/editarCustomer" ARGS="idUsuario=&tgu.idUsuario"/>
+ <!-- vamo a eliminar cuarta grabación  -->
+ <eBD:LINKTO PAGEID="50" ZONEID="41" VAR="varEliminarLink" FRIENDLY_URL="/eliminarCustomer" ARGS="idUsuario=&tgu.idUsuario&delete=S"/>
+ 
+ 
+                      <a href="<eBD:OUT VALUE='$varEditarLink'/>" class="btn btn-primary">Editar</a>
+                      <a href="<eBD:OUT VALUE='$varEliminarLink'/>" class="btn btn-primary">Eliminar</a>
+                   </td>
+                </tr>
+ 
+ 
+ 
+          </eBD:FOREACH>
+       </eBD:IF>
+ 
+ 
+ 
+ 
+ 
+    </tbody>
+ </table>
+ 
+ 
+ </div>

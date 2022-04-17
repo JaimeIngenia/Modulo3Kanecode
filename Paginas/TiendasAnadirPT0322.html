@@ -1,0 +1,136 @@
+<eBD:ARGS NAME="delete" DEFAULT="N"/>
+<eBD:ARGS NAME="idEmpresa" DEFAULT="-1"/>
+<eBD:ARGS NAME="Nombre" DEFAULT=""/>
+<eBD:ARGS NAME="Posicion" DEFAULT=""/>
+<eBD:ARGS NAME="Color" DEFAULT=""/>
+<eBD:ARGS NAME="Tipografia" DEFAULT=""/>
+<eBD:ARGS NAME="Logo" DEFAULT=""/>
+
+<!-- regla para llevar nuevamente a la pagina una vez creado, eliminado o actualizado -->
+<eBD:LINKTO PAGEID="49" ZONEID="41" VAR="tiendasLInk" FRIENDLY_URL="/tiendass"/>
+
+
+<!-- condicional para el eliminar -->
+<eBD:IF EXPR="$delete == 'S'">
+    <eBD:DELETE TABLE="tablaTiendaPT0322" IDFIELD="idEmpresa" IDVALUE="$idEmpresa"/>
+        <eBD:SET VAR="dum" VALUE="#[eBDResponse.status(302)]"/>
+        <eBD:SET VAR="dum" VALUE="#[eBDResponse.header('location','$tiendasLInk')]"/>
+</eBD:IF>
+
+
+<!-- para la imagen  -->
+<eBD:TMPFILE SOURCE="Logo" VAR="fichero"/>
+
+
+
+<eBD:IF EXPR="$Nombre != ''">
+    <eBD:IF EXPR="$idEmpresa =='-1'">
+        <eBD:INSERT TABLE="tablaTiendaPT0322">
+        <eBD:DATAFIELD FIELD="Nombre" VALUE="$Nombre"/>
+        <eBD:DATAFIELD FIELD="Posicion" VALUE="$Posicion"/>
+        <eBD:DATAFIELD FIELD="Color" VALUE="$Color"/>
+        <eBD:DATAFIELD FIELD="Tipografia" VALUE="$Tipografia"/>
+            <eBD:IF EXPR="$Logo != ''">
+                    <eBD:DATAFIELD FIELD="Logo" VALUE="$fichero"/> 
+            </eBD:IF>
+        <eBD:DATAFIELD FIELD="publicado" VALUE="S"/>
+        </eBD:INSERT>   
+                            <eBD:SET VAR="dum" VALUE="#[eBDResponse.status(302)]"/>
+                            <eBD:SET VAR="dum" VALUE="#[eBDResponse.header('location','$tiendasLInk')]"/>
+    
+    <eBD:ELSE>
+                    <eBD:UPDATE TABLE="tablaTiendaPT0322" IDFIELD="idEmpresa" IDVALUE="$idEmpresa" >
+                        <eBD:DATAFIELD FIELD="Nombre" VALUE="$Nombre"/>
+                        <eBD:DATAFIELD FIELD="Posicion" VALUE="$Posicion"/>
+                        <eBD:DATAFIELD FIELD="Color" VALUE="$Color"/>
+                        <eBD:DATAFIELD FIELD="Tipografia" VALUE="$Tipografia"/>
+                            <eBD:IF EXPR="$Logo != ''">
+                                <eBD:DATAFIELD FIELD="Logo" VALUE="$fichero"/> 
+                            </eBD:IF>
+                    </eBD:UPDATE>
+
+                            <eBD:SET VAR="dum" VALUE="#[eBDResponse.status(302)]"/>
+                            <eBD:SET VAR="dum" VALUE="#[eBDResponse.header('location','$tiendasLInk')]"/>
+
+    </eBD:ELSE>
+
+</eBD:IF>
+</eBD:IF>
+
+<!-- Actualizando -->
+<eBD:IF EXPR="$idEmpresa !='-1'">
+    
+<eBD:QUERY NAME="getDatosTienda" DATASOURCE="default">
+    select  idEmpresa,Nombre,Logo,Posicion,Color,Tipografia, _idRegistro
+    from tablaTiendaPT0322
+    where idEmpresa = $idEmpresa
+</eBD:QUERY>
+<eBD:IF EXPR="&getDatosTienda > 0"> 
+    <eBD:FETCHROW QUERY="getDatosTienda" NAME="gdt"/>
+            <!-- setearemos las variables -->
+            <eBD:SET VAR="Nombre" VALUE="&gdt.Nombre"/>
+            <eBD:SET VAR="Posicion" VALUE="&gdt.Posicion"/>
+            <eBD:SET VAR="Color" VALUE="&gdt.Color"/>
+            <eBD:SET VAR="Tipografia" VALUE="&gdt.Tipografia"/>
+</eBD:IF>
+
+</eBD:IF>
+
+
+
+<main class="col-md-9 ml-sm-auto col-lg-10 px-md-4">
+    <div>
+        Añadiendo Tiendas
+        <br>
+        <div class="form-group col">
+            <eBD:OUT VALUE="idEmpresa MUESTRE: $idEmpresa"/><br>
+            <eBD:OUT VALUE="Nombre: $Nombre"/><br>
+            <eBD:OUT VALUE="Posicion: $Posicion"/><br>
+            <eBD:OUT VALUE="Color: $Color"/><br>
+            <eBD:OUT VALUE="Tipografia: $Tipografia"/><br>
+            <eBD:OUT VALUE="Logo: $Logo"/><br>
+
+            
+        </div>
+    </div>
+<div>
+        <form action="" method="POST" enctype="multipart/form-data">
+       <input type="hidden" name="idEmpresa" value="<eBD:OUT VALUE='$idEmpresa'/>">
+            <div class="form-group row" >
+               <div class="col-md-4">
+                    <label for="Nombre">Nombre:</label>
+                    <input name="Nombre" value="<eBD:OUT VALUE='$Nombre'/>" requiered type="text" class="form-control" id="Nombre" placeholder="Nombre de la empresa">
+               </div>
+                <div class="col-md-4">
+                    <label for="Posicion">Posicion:</label>
+                    <input name="Posicion" value="<eBD:OUT VALUE='$Posicion'/>" requiered type="text" class="form-control" id="Posicion" placeholder="Posicion">  
+                </div>
+            </div>
+
+            <div class="form-group row" >
+               <div class="col-md-4">
+                    <label for="Color">Color:</label>
+                    <input name="Color"  value="<eBD:OUT VALUE='$Color'/>" requiered type="text" class="form-control" id="Color" placeholder="Color del producto">
+               </div>
+                <div class="col-md-4">
+                    <label for="Tipografia">Tipografia:</label>
+                    <input name="Tipografia" requiered type="text" class="form-control" id="Tipografia" placeholder="Tipografia" >  
+                </div>
+            </div>
+
+
+            <div class="form-group row" >
+               <div class="col-md-4">
+                    <label for="Logo">Logo:</label>
+                    <input name="Logo" type="file" class="form-control" id="Logo" >
+               </div>
+
+            </div>
+
+
+            <button type="submit" class="btn btn-primary">Guardar</button>
+        </form>
+    </div>
+</div>
+</main>
+</main>

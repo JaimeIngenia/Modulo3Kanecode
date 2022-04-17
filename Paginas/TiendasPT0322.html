@@ -1,0 +1,58 @@
+<div class="col-md-9 ml-sm-auto col-lg-10 px-md-4">
+    <h1>soy tiendas0322</h1>
+    <!-- Como hacer una tabla con bootstrap -->
+    <eBD:LINKTO PAGEID="51" ZONEID="41" VAR="varAnadirEditarTiendaLink" FRIENDLY_URL="anadirTiendas" />
+    <a href="<eBD:OUT VALUE='$varAnadirEditarTiendaLink'/>" class="btn btn-primary ">Añadir</a>
+ <table class="table">
+    <thead>
+       <tr>
+          <th>idEmpresa</th>
+          <th>Nombre</th>
+          <th>Logo</th>
+          <th>Posición</th>
+          <th>Color</th>
+          <th>Tipografia</th>
+          <th>Editar</th>
+       </tr>
+    </thead>
+    <tbody>
+       <!-- traer datos de las tablas con sql -->
+       <eBD:QUERY NAME="traerGetTiendas" DATASOURCE="default">
+          select  idEmpresa,Nombre,Logo,Posicion,Color,Tipografia, _idRegistro
+          from tablaTiendaPT0322
+       </eBD:QUERY>
+       <eBD:IF EXPR="&traerGetTiendas > 0">
+          <eBD:FOREACH QUERY="traerGetTiendas">
+             <eBD:FETCHROW QUERY="traerGetTiendas" NAME="tgt"/>
+ <eBD:FILEPATH VAR="imgFuenteLogo" TABLEID="48" ROW="tgt" FIELDNAME="Logo"/>
+                <tr>
+                   <td><eBD:OUT VALUE="&tgt.idEmpresa"/></td>
+                   <td><eBD:OUT VALUE="&tgt.Nombre"/></td>
+                   <td style="width: 32px"><img class="img-fluid " src="<eBD:OUT VALUE='$imgFuenteLogo'/>" alt="imagen de logo"></td>
+                   <td><eBD:OUT VALUE="&tgt.Posicion"/></td>
+                   <td><eBD:OUT VALUE="&tgt.Color"/></td>
+                   <td><eBD:OUT VALUE="&tgt.Tipografia"/></td>
+ 
+                   <td>
+                      <eBD:LINKTO PAGEID="51" ZONEID="41" VAR="varEditarTiendaLink" FRIENDLY_URL="editarTiendas"  ARGS="idEmpresa=&tgt.idEmpresa"/>
+                      <a href="<eBD:OUT VALUE='$varEditarTiendaLink'/>" class="btn btn-primary">Editar</a>
+                      <eBD:LINKTO PAGEID="51" ZONEID="41" VAR="varEdliminarTiendaLink" FRIENDLY_URL="eliminarTiendas"  ARGS="idEmpresa=&tgt.idEmpresa&delete=S"/>
+                      <a href="<eBD:OUT VALUE='$varEdliminarTiendaLink'/>" class="btn btn-primary">Eliminar</a>
+ 
+                   </td>
+                </tr>
+ 
+ 
+ 
+          </eBD:FOREACH>
+       </eBD:IF>
+ 
+ 
+ 
+ 
+ 
+    </tbody>
+ </table>
+ 
+ 
+ </div>
